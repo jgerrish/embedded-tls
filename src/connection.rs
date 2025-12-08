@@ -552,11 +552,11 @@ where
             let ctx_str = b"TLS 1.3, client CertificateVerify\x00";
             // 64 (pad) + 34 (ctx) + 48 (SHA-384) = 146 bytes required
             let mut msg: heapless::Vec<u8, 146> = heapless::Vec::new();
-            msg.resize(64, 0x20).map_err(|()| TlsError::EncodeError)?;
+            msg.resize(64, 0x20).map_err(|_| TlsError::EncodeError)?;
             msg.extend_from_slice(ctx_str)
-                .map_err(|()| TlsError::EncodeError)?;
+                .map_err(|_| TlsError::EncodeError)?;
             msg.extend_from_slice(&key_schedule.transcript_hash().clone().finalize())
-                .map_err(|()| TlsError::EncodeError)?;
+                .map_err(|_| TlsError::EncodeError)?;
 
             let signature = signing_key.sign(&msg);
 
