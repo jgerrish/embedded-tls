@@ -11,6 +11,10 @@ license = "Apache-2.0"
 keywords = ["embedded", "async", "tls", "no_std", "network"]
 exclude = [".github"]
 
+[package.metadata.docs.rs]
+features = ["webpki", "rustpki", "rsa", "ed25519", "p384"]
+rustdoc-args = ["--cfg", "docsrs"]
+
 [dependencies]
 portable-atomic = { version = "1.6.0", default-features = false }
 p256 = { version = "0.13", default-features = false, features = [ "ecdh", "ecdsa", "sha256" ] }
