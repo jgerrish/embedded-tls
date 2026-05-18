@@ -413,7 +413,7 @@ impl Default for TlsConfig<'_> {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Certificate<D> {
     X509(D),
