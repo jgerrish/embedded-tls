@@ -9,7 +9,6 @@ use sha2::digest::generic_array::{GenericArray, typenum::Unsigned};
 
 pub type HashOutputSize<CipherSuite> =
     <<CipherSuite as TlsCipherSuite>::Hash as OutputSizeUser>::OutputSize;
-pub type LabelBufferSize<CipherSuite> = <CipherSuite as TlsCipherSuite>::LabelBufferSize;
 
 pub type IvArray<CipherSuite> = GenericArray<u8, <CipherSuite as TlsCipherSuite>::IvLen>;
 pub type KeyArray<CipherSuite> = GenericArray<u8, <CipherSuite as TlsCipherSuite>::KeyLen>;
@@ -49,21 +48,22 @@ where
         context_type: ContextType<CipherSuite>,
     ) -> Result<GenericArray<u8, N>, TlsError> {
         //info!("make label {:?} {}", label, len);
-        let mut hkdf_label = heapless_typenum::Vec::<u8, LabelBufferSize<CipherSuite>>::new();
+        // Max label buffer: hash_output (up to 48 for SHA-384) + 12 (longest label) + 10 (overhead) = 70
+        let mut hkdf_label = heapless::Vec::<u8, 70>::new();
         hkdf_label
             .extend_from_slice(&N::to_u16().to_be_bytes())
-            .map_err(|()| TlsError::InternalError)?;
+            .map_err(|_| TlsError::InternalError)?;
 
         let label_len = 6 + label.len() as u8;
         hkdf_label
             .extend_from_slice(&label_len.to_be_bytes())
-            .map_err(|()| TlsError::InternalError)?;
+            .map_err(|_| TlsError::InternalError)?;
         hkdf_label
             .extend_from_slice(b"tls13 ")
-            .map_err(|()| TlsError::InternalError)?;
+            .map_err(|_| TlsError::InternalError)?;
         hkdf_label
             .extend_from_slice(label)
-            .map_err(|()| TlsError::InternalError)?;
+            .map_err(|_| TlsError::InternalError)?;
 
         match context_type {
             ContextType::None => {
@@ -72,10 +72,10 @@ where
             ContextType::Hash(context) => {
                 hkdf_label
                     .extend_from_slice(&(context.len() as u8).to_be_bytes())
-                    .map_err(|()| TlsError::InternalError)?;
+                    .map_err(|_| TlsError::InternalError)?;
                 hkdf_label
                     .extend_from_slice(&context)
-                    .map_err(|()| TlsError::InternalError)?;
+                    .map_err(|_| TlsError::InternalError)?;
             }
         }
 

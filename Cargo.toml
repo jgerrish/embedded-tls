@@ -29,7 +29,6 @@ aes-gcm = { version = "0.10.1", default-features = false, features = ["aes"] }
 digest = { version = "0.10.3", default-features = false, features = [ "core-api" ] }
 typenum = { version = "1.15.0", default-features = false }
 heapless = { version = "0.9", default-features = false }
-heapless_typenum = { package = "heapless", version = "0.6", default-features = false }
 embedded-io = "0.7"
 embedded-io-async = "0.7"
 embedded-io-adapters = { version = "0.7", optional = true }
